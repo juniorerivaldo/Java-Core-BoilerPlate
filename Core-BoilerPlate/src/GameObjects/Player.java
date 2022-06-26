@@ -22,6 +22,8 @@ public class Player extends GameObject{
 		x += velX;
 		y += velY;
 		
+		collision();
+		
 		// setando a velocidade conforme o keypress
 		if(handler.isUp()) velY = -5;	
 		else if(!handler.isDown()) velY = 0;
@@ -38,6 +40,21 @@ public class Player extends GameObject{
 	}
 
 	
+	private void collision() {
+		for(int i =0; i < handler.object.size(); i++) {
+			
+			GameObject tempObject = handler.object.get(i);
+			if(tempObject.getId() == ID.Block) {
+				// colisao com block
+				if(getBounts().intersects(tempObject.getBounts())) {
+					x += velX * -1;
+					y += velY * -1;
+				}
+			}
+		}
+		
+	}
+
 	public void render(Graphics g) {
 		g.setColor(Color.blue);
 		g.fillRect(x, y, 32, 48);

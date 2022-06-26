@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class Handler {
 	
 	// classe que vai fazer o handler de todos os gameobjects
-	LinkedList<GameObject> object = new LinkedList<GameObject>();
+	public LinkedList<GameObject> object = new LinkedList<GameObject>();
 	
 	private boolean up = false, down = false, left = false, right = false; // keys
 	

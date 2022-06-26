@@ -3,6 +3,7 @@ package Core;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
@@ -17,6 +18,7 @@ public class Game extends Canvas  implements Runnable{
 	private boolean isRunning = false;
 	private Thread thread;
 	private Handler handler;
+	private Camera camera;
 	private BufferedImage level = null;
 	
 	public Game() {
@@ -25,6 +27,7 @@ public class Game extends Canvas  implements Runnable{
 		new Window(1024, 768, "BoilerPlate", this);
 		start();
 		handler = new Handler();
+		camera = new Camera(0, 0);
 		this.addKeyListener(new KeyInput(handler)); // pegar inputs de keys
 		
 		BufferedImageLoader loader = new BufferedImageLoader(); // carregar o level da png
@@ -88,10 +91,18 @@ public class Game extends Canvas  implements Runnable{
 			return;
 		}
 		Graphics g = bs.getDrawGraphics();
+		Graphics2D g2d = (Graphics2D) g; // converter os graficos para 2d
 		// aqui inicia o desenho em tela
-		g.setColor(Color.white);
+		
+		g.setColor(Color.red);
 		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		g2d.translate(-camera.getX(),-camera.getY());
+		
+		
 		handler.render(g);
+		
+		g2d.translate(camera.getX(),camera.getY());
 		
 		// aqui termina o desenho em tela
 		g.dispose();
@@ -121,6 +132,13 @@ public class Game extends Canvas  implements Runnable{
 
 	private void tick() {
 		
+		// aqui passa a camera para o player
+		for(int i =0; i < handler.object.size(); i++) {
+			if(handler.object.get(i).getId() == ID.Player) {
+				camera.tick(handler.object.get(i));		
+			}
+			
+		}
 		// este metodo faz o update 
 		handler.tick();
 		
