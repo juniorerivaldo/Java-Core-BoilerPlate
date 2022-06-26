@@ -39,7 +39,7 @@ public class Player extends GameObject{
 
 	
 	public void render(Graphics g) {
-		g.setColor(Color.pink);
+		g.setColor(Color.blue);
 		g.fillRect(x, y, 32, 48);
 		
 	}

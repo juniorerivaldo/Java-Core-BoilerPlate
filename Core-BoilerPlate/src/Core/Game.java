@@ -6,7 +6,9 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
+import GameObjects.Block;
 import GameObjects.Player;
 import demoObjects.DemoObj;
 
@@ -15,6 +17,7 @@ public class Game extends Canvas  implements Runnable{
 	private boolean isRunning = false;
 	private Thread thread;
 	private Handler handler;
+	private BufferedImage level = null;
 	
 	public Game() {
 		
@@ -24,8 +27,10 @@ public class Game extends Canvas  implements Runnable{
 		handler = new Handler();
 		this.addKeyListener(new KeyInput(handler)); // pegar inputs de keys
 		
-		handler.addObject(new Player(100, 100, ID.Player, handler));
+		BufferedImageLoader loader = new BufferedImageLoader(); // carregar o level da png
+		level = loader.loadImage("/game_level.png");
 		
+		loadLevel(level);
 	}
 	
 	private void start() {
@@ -91,6 +96,27 @@ public class Game extends Canvas  implements Runnable{
 		// aqui termina o desenho em tela
 		g.dispose();
 		bs.show();
+	}
+	
+	// loading the level
+	private void loadLevel(BufferedImage image) {
+		int w = image.getWidth();
+		int h = image.getHeight();
+		for(int xx = 0; xx < w; xx++) {
+			for(int yy = 0; yy < h; yy++) {
+				int pixel = image.getRGB(xx, yy);
+				int red = (pixel >> 16)& 0xff;
+				int green = (pixel >> 8)& 0xff;
+				int blue = (pixel) & 0xff;
+				
+				if(red == 255) {
+					handler.addObject(new Block(xx*32, yy*32, ID.Block));
+				}
+				if(blue == 255) {
+					handler.addObject(new Player(xx*32, yy*32, ID.Player, handler));
+				}
+			}
+		}
 	}
 
 	private void tick() {
